@@ -65,7 +65,6 @@ end function;
 
 
 class TestEnumeration(unittest.TestCase):
-
     def test_single_line(self):
         fh = io.StringIO(SINGLE_LINE)
 
