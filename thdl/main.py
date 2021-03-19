@@ -6,6 +6,8 @@ Copyright (c) 2021 Michał Kruszewski
 
 import argparse
 import generate
+import pathlib
+import os
 
 
 def parse_cmd_line_args():
@@ -27,18 +29,40 @@ def parse_cmd_line_args():
         help="Check for extremely dump mistakes such as stucking resets to constant reset value.",
     )
     check_parser.add_argument("path", help=path_help)
-#    check_parser.set_defaults(func=check)
+    #    check_parser.set_defaults(func=check)
 
     generate_parser = subparsers.add_parser(
         "generate",
-        help="Create or update HDL source files based on the directives within existing files.",
+        help="Create or update VHDL source files based on the directives within existing files.",
     )
     generate_parser.add_argument("path", help=path_help)
+
+    return parser.parse_args()
+
+
+def get_files_to_work_on(path):
+    if not path.startswith("/"):
+        path = os.getcwd() + "/" + path
+
+    files = []
+    if os.path.isfile(path):
+        files.append(path)
+    elif os.path.isdir(path):
+        for f in pathlib.Path(path).glob("**/*.vhd"):
+            files.append(f)
+    else:
+        raise Exception(f"{args.path} is not a path to file or directory")
+
+    return files
 
 
 def main():
     args = parse_cmd_line_args()
-    print("Hello from main!")
+
+    files = get_files_to_work_on(args.path)
+    print(files)
+    exit()
+
     generate.generate()
 
 
