@@ -9,6 +9,9 @@ import generate
 import pathlib
 import os
 
+from check import check
+from generate import generate
+
 
 def parse_cmd_line_args():
     parser = argparse.ArgumentParser(
@@ -29,7 +32,7 @@ def parse_cmd_line_args():
         help="Check for extremely dump mistakes such as stucking resets to constant reset value.",
     )
     check_parser.add_argument("path", help=path_help)
-    #    check_parser.set_defaults(func=check)
+    check_parser.set_defaults(func=check.check)
 
     generate_parser = subparsers.add_parser(
         "generate",
@@ -60,10 +63,8 @@ def main():
     args = parse_cmd_line_args()
 
     files = get_files_to_work_on(args.path)
-    print(files)
-    exit()
 
-    generate.generate()
+    args.func(files)
 
 
 if __name__ == "__main__":
