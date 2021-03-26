@@ -21,11 +21,16 @@ def check(line):
 
 def _positive_reset(line):
     assignee = line.split("=>")[1].strip()
+
     if assignee.startswith("'1'"):
         return "Positive reset stuck to '1'!"
+
+    if NEGATIVE_RESET.search(assignee):
+        return "Positive reset mapped to negative reset!"
 
 
 def _negative_reset(line):
     assignee = line.split("=>")[1].strip()
+
     if assignee.startswith("'0'"):
         return "Negative reset stuck to '0'!"
