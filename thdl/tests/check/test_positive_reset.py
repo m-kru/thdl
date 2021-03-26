@@ -29,14 +29,12 @@ class TestPositiveReset(unittest.TestCase):
         fh = io.StringIO(LINES_STUCK_TO_1)
 
         for l in fh:
-            line = l
-            msg = check(l)
+            msg = check(l.lower())
             self.assertEqual(msg, "Positive reset stuck to '1'!")
 
     def test_mapped_to_negative(self):
         fh = io.StringIO(LINES_MAPPED_TO_NEGATIVE)
 
         for l in fh:
-            line = l
-            msg = check(l)
+            msg = check(l.lower())
             self.assertEqual(msg, "Positive reset mapped to negative reset!")

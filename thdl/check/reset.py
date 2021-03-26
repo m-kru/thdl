@@ -1,9 +1,9 @@
 import re
 
 
-POSITIVE_RESET = re.compile("re?se?t((p?)|((_p)?(_i)?)|(_i_p))?\s*=>", re.I)
+POSITIVE_RESET = re.compile("re?se?t((p?)|((_p)?(_i)?)|(_i_p))?\s*=>")
 
-NEGATIVE_RESET = re.compile("re?se?t(n?)|((_n)?(_i)?)|(_i_n)\s*=>", re.I)
+NEGATIVE_RESET = re.compile("re?se?t(n?)|((_n)?(_i)?)|(_i_n)\s*=>")
 
 
 def check(line):

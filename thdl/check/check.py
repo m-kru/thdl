@@ -8,7 +8,7 @@ def check(filepaths):
         with open(path) as fh:
             for i, line in enumerate(fh, start=1):
                 # Preprocess line.
-                l = line.strip()
+                l = line.lower().strip()
                 if l.startswith("--"):
                     continue
                 l = line.split("--")[0]

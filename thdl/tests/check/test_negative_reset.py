@@ -22,6 +22,5 @@ class TestPositiveReset(unittest.TestCase):
         fh = io.StringIO(LINES_STUCK_TO_1)
 
         for l in fh:
-            line = l
-            msg = check(l)
+            msg = check(l.lower())
             self.assertEqual(msg, "Negative reset stuck to '0'!")
