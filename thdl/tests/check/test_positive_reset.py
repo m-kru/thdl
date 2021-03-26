@@ -21,7 +21,13 @@ rstp => rstn,
 reset => reset_n_i,
 reset_p_i => rst_n);
 wb_rst_p=>  rst_n,
-wb_rst_p_i=> foo_bar_n,
+wb_rst_p_i=> foo_reset_n,
+"""
+
+LINES_VALID ="""rst_p => '0',
+rst_p_i => not rst_n_i,
+rst_p_i => not(reset_n),
+wb_rst_n => not(rst_p));
 """
 
 class TestPositiveReset(unittest.TestCase):
@@ -30,11 +36,18 @@ class TestPositiveReset(unittest.TestCase):
 
         for l in fh:
             msg = check(l.lower())
-            self.assertEqual(msg, "Positive reset stuck to '1'!")
+            self.assertEqual(msg, "Positive reset stuck to '1'!", l)
 
     def test_mapped_to_negative(self):
         fh = io.StringIO(LINES_MAPPED_TO_NEGATIVE)
 
         for l in fh:
             msg = check(l.lower())
-            self.assertEqual(msg, "Positive reset mapped to negative reset!")
+            self.assertEqual(msg, "Positive reset mapped to negative reset!", l)
+
+    def test_valid(self):
+        fh = io.StringIO(LINES_VALID)
+
+        for l in fh:
+            msg = check(l.lower())
+            self.assertEqual(msg, None, l)

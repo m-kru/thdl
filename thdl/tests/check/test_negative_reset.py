@@ -23,4 +23,4 @@ class TestPositiveReset(unittest.TestCase):
 
         for l in fh:
             msg = check(l.lower())
-            self.assertEqual(msg, "Negative reset stuck to '0'!")
+            self.assertEqual(msg, "Negative reset stuck to '0'!", l)
