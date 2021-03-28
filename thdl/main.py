@@ -17,9 +17,9 @@ def parse_cmd_line_args():
     parser = argparse.ArgumentParser(
         prog="thdl",
         description="thdl is a bunch of tools (hidden under single program) for easing the work with VHDL language."
-        "It is (and will always be) based solely on the text processing, no semantic analysis."
-        "Such approach draws clear line what might be included and what will never be supported."
-        "'t' in 'the thdl' stands for 'text'.",
+        " It is (and will always be) based solely on the text processing, no semantic analysis."
+        " Such approach draws clear line what might be included and what will never be supported."
+        " 't' in the 'thdl' stands for 'text'.",
     )
 
     subparsers = parser.add_subparsers()
