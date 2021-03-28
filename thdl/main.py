@@ -13,6 +13,9 @@ from check import check
 from generate import generate
 
 
+VERSION = "0.0.1"
+
+
 def parse_cmd_line_args():
     parser = argparse.ArgumentParser(
         prog="thdl",
