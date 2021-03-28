@@ -1,5 +1,5 @@
 """
-SPDX-License-Identifier: GPL-3.0
+SPDX-License-Identifier: GPL-3.0-or-later
 
 Copyright (c) 2021 Michał Kruszewski
 """
@@ -13,7 +13,7 @@ from check import check
 from generate import generate
 
 
-VERSION = "0.0.1"
+VERSION = "0.0.4"
 
 
 def parse_cmd_line_args():
