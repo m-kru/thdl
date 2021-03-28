@@ -9,8 +9,6 @@ NEGATIVE_RESET = re.compile("re?se?t((n)|(_n)|(_i_n))")
 
 STARTS_WITH_NOT = re.compile("^not\s*\(?")
 
-ZERO = re.compile("'0'")
-
 
 def check(line):
     """Returns message if violation is found or None."""
@@ -52,9 +50,22 @@ def _positive_reset(line):
 def _negative_reset(line):
     assignee = line.split("=>")[1].strip()
 
+    if assignee.startswith("'0'"):
+        return "Negative reset stuck to '0'!"
+
     negated = False
     if STARTS_WITH_NOT.search(assignee):
         negated = True
 
-    if ZERO.search(assignee) and not negated:
-        return "Negative reset stuck to '0'!"
+    if NEGATIVE_RESET.search(assignee):
+        reset = "negative"
+    elif POSITIVE_RESET.search(assignee):
+        reset = "positive"
+    else:
+        return None
+
+    if reset == "positive" and not negated:
+        return "Negative reset mapped to positive reset!"
+
+    if reset == "negative" and negated:
+        return "Negative reset mapped to negated negative reset!"
