@@ -13,7 +13,7 @@ from .check import check
 from .generate import generate
 
 
-VERSION = "0.0.4"
+VERSION = "0.0.6"
 
 
 def parse_cmd_line_args():
