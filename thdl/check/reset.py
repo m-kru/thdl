@@ -32,10 +32,6 @@ def check(line, silent=False):
     global SILENT
     SILENT = silent
 
-    line = line.strip()
-    if line.startswith("--"):
-        return None
-
     if POSITIVE_RESET_PORT_MAP.search(line):
         return _positive_reset(line)
 
