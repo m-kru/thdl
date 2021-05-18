@@ -5,7 +5,7 @@ def check(filepaths):
     num_violations = False
 
     for path in filepaths:
-        with open(path) as fh:
+        with open(path, encoding='latin-1') as fh:
             for i, line in enumerate(fh, start=1):
                 # Preprocess line.
                 l = line.lower().strip()
