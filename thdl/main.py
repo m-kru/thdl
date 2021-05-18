@@ -7,6 +7,7 @@ Copyright (c) 2021 Michał Kruszewski
 import argparse
 import pathlib
 import os
+import sys
 
 from .check import check
 from .generate import generate
@@ -70,7 +71,7 @@ def main():
 
     files = get_files_to_work_on(args.path)
 
-    args.func(files)
+    sys.exit(args.func(files))
 
 
 if __name__ == "__main__":
