@@ -1,7 +1,7 @@
 import unittest
 import io
 
-from check.reset import check
+from thdl.check.reset import check
 
 LINES_STUCK_TO_1 = """rst_n => '0',
 rst_n=>'0',
@@ -41,26 +41,26 @@ class TestPositiveReset(unittest.TestCase):
         fh = io.StringIO(LINES_STUCK_TO_1)
 
         for l in fh:
-            msg = check(l.lower())
+            msg = check(l.lower(), silent=True)
             self.assertEqual(msg, "Negative reset stuck to '0'!", l)
 
     def test_mapped_to_positive(self):
         fh = io.StringIO(LINES_MAPPED_TO_POSITIVE)
 
         for l in fh:
-            msg = check(l.lower())
+            msg = check(l.lower(), silent=True)
             self.assertEqual(msg, "Negative reset mapped to positive reset!", l)
 
     def test_negated_negative(self):
         fh = io.StringIO(LINES_NEGATED_NEGATIVE)
 
         for l in fh:
-            msg = check(l.lower())
+            msg = check(l.lower(), silent=True)
             self.assertEqual(msg, "Negative reset mapped to negated negative reset!", l)
 
     def test_valid(self):
         fh = io.StringIO(LINES_VALID)
 
         for l in fh:
-            msg = check(l.lower())
+            msg = check(l.lower(), silent=True)
             self.assertEqual(msg, None, l)

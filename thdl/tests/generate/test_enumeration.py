@@ -1,7 +1,7 @@
 import unittest
 import io
 
-from generate.enumeration import Enumeration
+from thdl.generate.enumeration import Enumeration
 
 SINGLE_LINE = "type t_my_enum is (ONE, TWO, THREE);"
 

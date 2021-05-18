@@ -11,8 +11,27 @@ NEGATIVE_RESET = re.compile("re?se?t((n)|(_n)|(_i_n))")
 STARTS_WITH_NOT = re.compile("^not\s*\(?")
 
 
-def check(line):
-    """Returns reference to string if violation is found. Otherwise None."""
+SILENT = False
+
+
+def check(line, silent=False):
+    """Check line for stupid reset mistakes.
+
+    Parameters:
+    -----------
+    line :
+        Line read from file.
+    silent : bool
+        Do not print any message, only return it.
+        Useful for unit tests.
+
+    Returns
+    -------
+        Reference to string if violation is found. Otherwise None.
+    """
+    global SILENT
+    SILENT = silent
+
     line = line.strip()
     if line.startswith("--"):
         return None
@@ -25,9 +44,10 @@ def check(line):
 
 
 def _message(msg):
-    print("{}:{}".format(file_info.FILEPATH, file_info.LINE_NUMBER))
-    print(file_info.LINE, end='')
-    print(msg + "\n")
+    if not SILENT:
+        print("{}:{}".format(file_info.FILEPATH, file_info.LINE_NUMBER))
+        print(file_info.LINE, end='')
+        print(msg + "\n")
 
     return msg
 
