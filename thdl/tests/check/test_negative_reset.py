@@ -3,7 +3,7 @@ import io
 
 from thdl.check.reset import check
 
-LINES_STUCK_TO_1 = """rst_n => '0',
+LINES_STUCK_TO_0 = """rst_n => '0',
 rst_n=>'0',
 rstn => '0'
 reset_n_i=>'0',
@@ -38,7 +38,7 @@ rst_i_n => not wb_reset,
 
 class TestPositiveReset(unittest.TestCase):
     def test_stuck_to_0(self):
-        fh = io.StringIO(LINES_STUCK_TO_1)
+        fh = io.StringIO(LINES_STUCK_TO_0)
 
         for l in fh:
             msg = check(l.lower(), silent=True)
