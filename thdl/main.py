@@ -5,12 +5,11 @@ Copyright (c) 2021 Michał Kruszewski
 """
 
 import argparse
-import generate
 import pathlib
 import os
 
-from check import check
-from generate import generate
+from .check import check
+from .generate import generate
 
 
 VERSION = "0.0.4"
@@ -23,6 +22,10 @@ def parse_cmd_line_args():
         " It is (and will always be) based solely on the text processing, no semantic analysis."
         " Such approach draws clear line what might be included and what will never be supported."
         " 't' in the 'thdl' stands for 'text'.",
+    )
+
+    parser.add_argument(
+        "-v", "--version", help="Display thdl version.", action="version", version=VERSION
     )
 
     subparsers = parser.add_subparsers()
