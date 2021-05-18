@@ -1,6 +1,6 @@
-from . import reset
-
 from . import file_info
+from . import process
+from . import reset
 
 
 def check(filepaths):
@@ -17,7 +17,10 @@ def check(filepaths):
                 l = line.lower().strip()
                 if l.startswith("--"):
                     continue
-                l = line.split("--")[0]
+                l = l.split("--")[0]
+
+                if process.check(l):
+                    num_violations += 1
 
                 if reset.check(l):
                     num_violations += 1
