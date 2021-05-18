@@ -7,3 +7,5 @@ Such approach draws clear line what might be included and what will never be sup
 However, do **not** read THDL as "Text Hardware Description Language" and do **not** treat it as such.
 
 ## Documentation
+
+Check the [wiki](https://github.com/m-kru/thdl/wiki).
