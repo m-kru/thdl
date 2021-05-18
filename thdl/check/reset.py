@@ -1,5 +1,6 @@
 import re
 
+from . import file_info
 
 POSITIVE_RESET_PORT_MAP = re.compile("re?se?t((p)|(_p)|(_i)|(_p_i)|(_i_p))?\s*=>")
 POSITIVE_RESET = re.compile("re?se?t((p)|(_i)|(_p))?")
@@ -11,7 +12,7 @@ STARTS_WITH_NOT = re.compile("^not\s*\(?")
 
 
 def check(line):
-    """Returns message if violation is found or None."""
+    """Returns reference to string if violation is found. Otherwise None."""
     line = line.strip()
     if line.startswith("--"):
         return None
@@ -23,11 +24,19 @@ def check(line):
         return _negative_reset(line)
 
 
+def _message(msg):
+    print("{}:{}".format(file_info.FILEPATH, file_info.LINE_NUMBER))
+    print(file_info.LINE, end='')
+    print(msg + "\n")
+
+    return msg
+
+
 def _positive_reset(line):
     assignee = line.split("=>")[1].strip()
 
     if assignee.startswith("'1'"):
-        return "Positive reset stuck to '1'!"
+        return _message("Positive reset stuck to '1'!")
 
     negated = False
     if STARTS_WITH_NOT.search(assignee):
@@ -41,17 +50,17 @@ def _positive_reset(line):
         return None
 
     if reset == "negative" and not negated:
-        return "Positive reset mapped to negative reset!"
+        return _message("Positive reset mapped to negative reset!")
 
     if reset == "positive" and negated:
-        return "Positive reset mapped to negated positive reset!"
+        return _message("Positive reset mapped to negated positive reset!")
 
 
 def _negative_reset(line):
     assignee = line.split("=>")[1].strip()
 
     if assignee.startswith("'0'"):
-        return "Negative reset stuck to '0'!"
+        return _message("Negative reset stuck to '0'!")
 
     negated = False
     if STARTS_WITH_NOT.search(assignee):
@@ -65,7 +74,7 @@ def _negative_reset(line):
         return None
 
     if reset == "positive" and not negated:
-        return "Negative reset mapped to positive reset!"
+        return _message("Negative reset mapped to positive reset!")
 
     if reset == "negative" and negated:
-        return "Negative reset mapped to negated negative reset!"
+        return _message("Negative reset mapped to negated negative reset!")
