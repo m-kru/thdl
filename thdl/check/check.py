@@ -3,6 +3,9 @@ from . import process
 from . import reset
 
 
+process_checker=process.ProcessChecker()
+
+
 def check(filepaths):
     num_violations = 0
 
@@ -19,7 +22,7 @@ def check(filepaths):
                     continue
                 l = l.split("--")[0]
 
-                if process.check(l):
+                if process_checker.check(l):
                     num_violations += 1
 
                 if reset.check(l):

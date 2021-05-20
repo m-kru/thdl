@@ -1,106 +1,83 @@
 import re
 
+from . import checker
 from . import file_info
 
-PROCESS_WITH_SENSITIVITY_LIST=re.compile(r"\bprocess\b\s*\(.*\)")
-RISING_EDGE=re.compile(r"\brising_edge\b")
-FALLING_EDGE=re.compile(r"\bfalling_edge\b")
+class ProcessChecker(checker.Checker):
 
+    PROCESS=re.compile(r"\bprocess\b")
+    PROCESS_WITH_SENSITIVITY_LIST=re.compile(r"\bprocess\b\s*\((.*)\)")
+    ING_EDGE=re.compile(r"\b(ris|fall)ing_edge\b\s*\((.*)\)")
 
-SILENT = False
+    def __init__(self):
+        super(ProcessChecker, self).__init__()
 
+#        inside_process = False
+        sensitivity_list = []
+        sensitivity_list_line = None
+        sensitivity_list_line_number = None
 
-inside_synchronous_process = False
-clocks_in_sensitivity_list = []
-clocks_sensitivity_list_line = None
-clocks_sensitivity_list_line_number = None
+    def check(self, line):
+        """Check line for stupid process mistakes.
 
+        Parameters:
+        -----------
+        line :
+            Line read from file.
 
-def check(line, silent=False):
-    """Check line for stupid process mistakes.
+        Returns
+        -------
+            Reference to string if violation is found. Otherwise None.
+        """
+        match = self.PROCESS_WITH_SENSITIVITY_LIST.search(line)
+        if match:
+            self.sensitivity_list = []
+            self.sensitivity_list_line = file_info.LINE
+            self.sensitivity_list_line_number = file_info.LINE_NUMBER
 
-    Parameters:
-    -----------
-    line :
-        Line read from file.
-    silent : bool
-        Do not print any message, only return it.
-        Useful for unit tests.
+            self._parse_sensitivity_list(match[1])
+        elif self.PROCESS.search(line):
+            if line.startswith('end'):
+                return None
 
-    Returns
-    -------
-        Reference to string if violation is found. Otherwise None.
-    """
-    global SILENT
-    global inside_synchronous_process
-    global clocks_in_sensitivity_list
+            self.sensitivity_list = []
+            self.process_line = file_info.LINE
+            self.process_line_number = file_info.LINE_NUMBER
 
-    SILENT = silent
+        match = self.ING_EDGE.search(line)
+        if match:
+            return self._ing_edge(line, match[2])
 
-    if PROCESS_WITH_SENSITIVITY_LIST.search(line):
-        inside_synchronous_process = False
-        clocks_in_sensitivity_list = []
+    def _parse_sensitivity_list(self, list_):
+        for e in list_.split(','):
+            self.sensitivity_list.append(e.strip())
 
-        if line.startswith("end"):
+    def _ing_edge(self, line, signal):
+        # Ignore typical test bench use cases.
+        if line.startswith("wait"):
             return None
 
-        _parse_process_line(line)
+        # Ignore some rare, but synthesizable constructs.
+        if "<=" in line and "when" in line:
+            return None
 
-    if RISING_EDGE.search(line):
-        return _rising_edge(line)
+#        if not self.inside_process:
+#            return self.message("{}_edge function found outside synchronous process".format(edge))
 
-    if FALLING_EDGE.search(line):
-        return _falling_edge(line)
+        # Handle some special cases, that are not easily to handle with regex.
+        if signal.endswith("))"):
+            signal = signal[:-1]
+        if signal.endswith(")") and '(' not in signal:
+            signal = signal[:-1]
 
+        if not self.sensitivity_list:
+            return self.message(
+                "'{}' found in the edge function, but the sensitivity list is missing in line {}:\n{}".format(
+                    signal, self.process_line_number, self.process_line)
+            )
 
-def _message(msg):
-    if not SILENT:
-        print("{}:{}".format(file_info.FILEPATH, file_info.LINE_NUMBER))
-        print(file_info.LINE, end='')
-        print(msg + "\n")
-
-    return msg
-
-
-def _parse_process_line(line):
-    global inside_synchronous_process
-    global clocks_sensitivity_list_line
-    global clocks_sensitivity_list_line_number
-    global clocks_in_sensitivity_list
-
-    sensitivity_list = line.split(')')[0].split('(')[1].split(',')
-
-    for e in sensitivity_list:
-        if 'clk' in e or 'clock' in e:
-            inside_synchronous_process = True
-            clocks_sensitivity_list_line = file_info.LINE
-            clocks_sensitivity_list_line_number = file_info.LINE_NUMBER
-            clocks_in_sensitivity_list.append(e.strip())
-
-
-def _get_clock_from_edge_function(line):
-    return line.split('edge')[1].split(')')[0].split('(')[1].strip()
-
-
-def _rising_edge(line):
-    # Ignore typical test bench use cases.
-    if line.startswith("wait"):
-        return None
-
-    if not inside_synchronous_process:
-        print(clocks_in_sensitivity_list)
-        return _message("rising_edge function found outside synchronous process")
-
-    clock = _get_clock_from_edge_function(line)
-    if clock not in clocks_in_sensitivity_list:
-        print(clocks_in_sensitivity_list)
-        return _message(
-            "'{}' not found in the sensitivity list in line {}:\n{}".format(
-                clock, clocks_sensitivity_list_line_number, clocks_sensitivity_list_line)
-        )
-
-def _falling_edge(line):
-    if not inside_synchronous_process:
-        return _message("falling_edge function found outside synchronous process")
-
-    clock = _get_clock_from_edge_function(line)
+        if signal not in self.sensitivity_list:
+            return self.message(
+                "'{}' not found in the sensitivity list in line {}:\n{}".format(
+                    signal, self.sensitivity_list_line_number, self.sensitivity_list_line)
+            )
