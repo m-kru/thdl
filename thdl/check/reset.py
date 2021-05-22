@@ -42,7 +42,7 @@ def check(line, silent=False):
 def _message(msg):
     if not SILENT:
         print("{}:{}".format(file_info.FILEPATH, file_info.LINE_NUMBER))
-        print(file_info.LINE, end='')
+        print(file_info.LINE, end="")
         print(msg + "\n")
 
     return msg

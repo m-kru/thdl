@@ -3,7 +3,7 @@ from . import process
 from . import reset
 
 
-process_checker=process.ProcessChecker()
+process_checker = process.ProcessChecker()
 
 
 def check(filepaths):
@@ -11,7 +11,7 @@ def check(filepaths):
 
     for path in filepaths:
         file_info.FILEPATH = path
-        with open(path, encoding='latin-1') as fh:
+        with open(path, encoding="latin-1") as fh:
             for i, line in enumerate(fh, start=1):
                 file_info.LINE = line
                 file_info.LINE_NUMBER = i

@@ -26,7 +26,11 @@ def parse_cmd_line_args():
     )
 
     parser.add_argument(
-        "-v", "--version", help="Display thdl version.", action="version", version=VERSION
+        "-v",
+        "--version",
+        help="Display thdl version.",
+        action="version",
+        version=VERSION,
     )
 
     subparsers = parser.add_subparsers()
