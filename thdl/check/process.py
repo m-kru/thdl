@@ -3,6 +3,7 @@ import re
 from . import checker
 from . import file_info
 
+
 class ProcessChecker(checker.Checker):
 
     PROCESS=re.compile(r"\bprocess\b")
@@ -12,7 +13,6 @@ class ProcessChecker(checker.Checker):
     def __init__(self):
         super(ProcessChecker, self).__init__()
 
-#        inside_process = False
         sensitivity_list = []
         sensitivity_list_line = None
         sensitivity_list_line_number = None
@@ -60,9 +60,6 @@ class ProcessChecker(checker.Checker):
         # Ignore some rare, but synthesizable constructs.
         if "<=" in line and "when" in line:
             return None
-
-#        if not self.inside_process:
-#            return self.message("{}_edge function found outside synchronous process".format(edge))
 
         # Handle some special cases, that are not easily to handle with regex.
         if signal.endswith("))"):
